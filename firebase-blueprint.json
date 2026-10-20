@@ -1,0 +1,150 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile with role and account status",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "User UID", "maxLength": 128 },
+        "displayName": { "type": "string", "description": "Full name or display nickname", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "description": "User email address", "maxLength": 150 },
+        "photoURL": { "type": "string", "description": "Avatar URL", "maxLength": 1000 },
+        "role": { "type": "string", "enum": ["member", "moderator", "admin"], "description": "User access level" },
+        "status": { "type": "string", "enum": ["active", "suspended"], "description": "Account status" },
+        "bio": { "type": "string", "description": "Short bio or school/affiliation", "maxLength": 500 },
+        "createdAt": { "type": "string", "description": "Account creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["uid", "displayName", "email", "role", "status"]
+    },
+    "Resource": {
+      "title": "Educational Resource",
+      "description": "Knowledge item, learning media, document, or link shared by community",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Resource title", "maxLength": 200, "minLength": 3 },
+        "description": { "type": "string", "description": "Detailed explanation of resource", "maxLength": 5000 },
+        "category": { "type": "string", "description": "Subject category (e.g. Computer, Math, Science)", "maxLength": 60 },
+        "level": { "type": "string", "description": "Education target level", "maxLength": 60 },
+        "mediaType": { "type": "string", "description": "Type of media (PDF, Video, Link, Slides, Doc)", "maxLength": 50 },
+        "url": { "type": "string", "description": "External resource URL or video link", "maxLength": 2000 },
+        "fileAttachmentUrl": { "type": "string", "description": "Firebase storage download link or data URI", "maxLength": 5000 },
+        "fileName": { "type": "string", "description": "Attached file name", "maxLength": 255 },
+        "fileSize": { "type": "number", "description": "File size in bytes" },
+        "authorId": { "type": "string", "description": "Author UID", "maxLength": 128 },
+        "authorName": { "type": "string", "description": "Author display name", "maxLength": 100 },
+        "authorEmail": { "type": "string", "description": "Author email address", "maxLength": 150 },
+        "authorPhotoURL": { "type": "string", "description": "Author avatar image", "maxLength": 1000 },
+        "isHidden": { "type": "boolean", "description": "Hidden by moderator flag" },
+        "viewCount": { "type": "number", "description": "Times viewed" },
+        "likesCount": { "type": "number", "description": "Total saves or likes" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["title", "description", "category", "level", "mediaType", "authorId", "authorName", "isHidden"]
+    },
+    "Favorite": {
+      "title": "User Favorite",
+      "description": "Bookmarked resource record per user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "UID of the bookmark owner", "maxLength": 128 },
+        "resourceId": { "type": "string", "description": "Referenced resource document ID", "maxLength": 128 },
+        "resourceTitle": { "type": "string", "description": "Cached title for fast display", "maxLength": 200 },
+        "resourceCategory": { "type": "string", "description": "Cached category", "maxLength": 60 },
+        "resourceMediaType": { "type": "string", "description": "Cached media type", "maxLength": 50 },
+        "resourceLevel": { "type": "string", "description": "Cached educational level", "maxLength": 60 },
+        "createdAt": { "type": "string", "description": "Bookmarked timestamp" }
+      },
+      "required": ["userId", "resourceId", "resourceTitle"]
+    },
+    "Report": {
+      "title": "Resource Report",
+      "description": "Flag submitted by user regarding broken link, inappropriate or copyrighted content",
+      "type": "object",
+      "properties": {
+        "resourceId": { "type": "string", "description": "Flagged resource ID", "maxLength": 128 },
+        "resourceTitle": { "type": "string", "description": "Flagged resource title", "maxLength": 200 },
+        "reason": { "type": "string", "description": "Standard reason code", "maxLength": 100 },
+        "details": { "type": "string", "description": "User notes or explanation", "maxLength": 1000 },
+        "reporterId": { "type": "string", "description": "UID of the reporting member", "maxLength": 128 },
+        "reporterEmail": { "type": "string", "description": "Email of the reporting member", "maxLength": 150 },
+        "status": { "type": "string", "enum": ["pending", "resolved", "dismissed"], "description": "Report status" },
+        "actionTaken": { "type": "string", "description": "Moderator resolution note", "maxLength": 500 },
+        "createdAt": { "type": "string", "description": "Report submission timestamp" },
+        "resolvedAt": { "type": "string", "description": "Resolution timestamp" }
+      },
+      "required": ["resourceId", "reason", "reporterId", "status"]
+    },
+    "ModerationLog": {
+      "title": "Moderation Log",
+      "description": "Audit trail of actions taken by moderators or administrators",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string", "description": "Action performed (e.g. hide_resource, delete_resource, suspend_user, change_role)", "maxLength": 100 },
+        "targetType": { "type": "string", "description": "Entity affected (resource, user, site_setting)", "maxLength": 50 },
+        "targetId": { "type": "string", "description": "Target ID", "maxLength": 128 },
+        "targetTitle": { "type": "string", "description": "Target display title or name", "maxLength": 200 },
+        "performedByUid": { "type": "string", "description": "Staff UID", "maxLength": 128 },
+        "performedByEmail": { "type": "string", "description": "Staff Email", "maxLength": 150 },
+        "reason": { "type": "string", "description": "Explanation for audit trail", "maxLength": 500 },
+        "timestamp": { "type": "string", "description": "Action log timestamp" }
+      },
+      "required": ["action", "targetType", "targetId", "performedByUid", "performedByEmail"]
+    },
+    "SiteSettings": {
+      "title": "Site Configuration",
+      "description": "Global website settings, title, announcements, and managed category list",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string", "description": "Site display name", "maxLength": 100 },
+        "siteDescription": { "type": "string", "description": "Site summary", "maxLength": 500 },
+        "announcement": { "type": "string", "description": "Global banner announcement text", "maxLength": 1000 },
+        "logoUrl": { "type": "string", "description": "Logo URL or icon name", "maxLength": 1000 },
+        "updatedBy": { "type": "string", "description": "Admin UID who last saved", "maxLength": 128 },
+        "updatedAt": { "type": "string", "description": "Update timestamp" }
+      },
+      "required": ["siteName"]
+    },
+    "AdminRecord": {
+      "title": "Admin Record",
+      "description": "Quick lookup document confirming admin authority",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "description": "Admin email", "maxLength": 150 },
+        "assignedAt": { "type": "string", "description": "Timestamp when admin granted" }
+      },
+      "required": ["email"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile with role (member, moderator, admin) and status"
+    },
+    "/resources/{resourceId}": {
+      "schema": "Resource",
+      "description": "Public educational materials and media"
+    },
+    "/favorites/{favoriteId}": {
+      "schema": "Favorite",
+      "description": "User bookmarked resources (ID: {userId}_{resourceId})"
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Resource issue reports for moderator review"
+    },
+    "/moderationLogs/{logId}": {
+      "schema": "ModerationLog",
+      "description": "Audit trails for moderation and administrative changes"
+    },
+    "/settings/{settingId}": {
+      "schema": "SiteSettings",
+      "description": "Site-wide configuration and customizable categories"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminRecord",
+      "description": "List of admin UIDs for security rule existence check"
+    }
+  }
+}
